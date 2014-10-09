@@ -4,8 +4,7 @@
   }
   
   var Bullet = Asteroids.Bullet = function (world, pos, vel) {  
-    Asteroids.MovingObject.call(this,
-      {
+    Asteroids.MovingObject.call(this, {
         world: world,
         pos: pos,
         vel: vel,
@@ -26,7 +25,7 @@
     if (obj instanceof Asteroids.Asteroid) {
       this.world.remove(this);
       this.world.remove(obj);
-      this.world.game.score++;
+      this.world.onAsteroidShot();
     }
   };
 })();

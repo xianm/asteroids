@@ -11,16 +11,6 @@
     sub.prototype = new Surrogate();
   };
   
-  Utils.getDocWidth = function (fallback) {
-    return Math.max(document.documentElement.clientWidth, 
-      window.innerWidth || fallback);
-  };
-  
-  Utils.getDocHeight = function (fallback) {
-    return Math.max(document.documentElement.clientHeight, 
-      window.innerHeight || fallback);
-  };
-
   Utils.randomPos = function () {
     return [Math.random() * Asteroids.Game.DIM_X,
             Math.random() * Asteroids.Game.DIM_Y];

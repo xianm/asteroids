@@ -22,8 +22,7 @@
 
   Ship.prototype.collidedWith = function (obj) {
     if (obj instanceof Asteroids.Asteroid) {
-      this.world.game.lives--;
-      this.relocate();
+      this.world.onPlayerHit();
     }
   };
 

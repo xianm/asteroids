@@ -4,8 +4,7 @@
   }
 
   var Asteroid = Asteroids.Asteroid = function (world, pos) {
-    Asteroids.MovingObject.call(this, 
-      {
+    Asteroids.MovingObject.call(this, {
         world: world,
         pos: pos, 
         vel: [this.randomSpeed(), this.randomSpeed()], 
