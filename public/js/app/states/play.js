@@ -56,7 +56,7 @@
   PlayState.prototype.step = function () {
     this.world.step();
 
-    if (this.lives === 0) {
+    if (this.lives === 0 || this.world.asteroids.length === 0) {
       this.game.changeState(new Asteroids.GameOverState(this.game, this.score));
     }
   };
