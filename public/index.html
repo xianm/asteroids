@@ -8,29 +8,22 @@
     <script src="js/lib/keymaster.js"></script>
     <script src="js/app/utils.js"></script>
     <script src="js/app/game.js"></script>
-    <script src="js/app/gameView.js"></script>
-    <script src="js/app/menuState.js"></script>
-    <script src="js/app/playState.js"></script>
-    <script src="js/app/winState.js"></script>
-    <script src="js/app/gameOverState.js"></script>
-    <script src="js/app/world.js"></script>
-    <script src="js/app/movingObject.js"></script>
-    <script src="js/app/asteroid.js"></script>
-    <script src="js/app/bullet.js"></script>
+    <script src="js/app/moving-object.js"></script>
     <script src="js/app/ship.js"></script>
+    <script src="js/app/bullet.js"></script>
+    <script src="js/app/asteroid.js"></script>
+    <script src="js/app/world.js"></script>
+    <script src="js/app/states/main-menu.js"></script>
+    <script src="js/app/states/play.js"></script>
+    <script src="js/app/states/game-over.js"></script>
   </head>
 
   <body>
-    <canvas id="game-canvas"></canvas>
+    <canvas id="game"></canvas>
   </body>
 
   <script>
-    var canvas = document.getElementById("game-canvas");
-    var ctx = canvas.getContext('2d');
-    var game = new Asteroids.Game();
-    canvas.width = Asteroids.Game.DIM_X;
-    canvas.height = Asteroids.Game.DIM_Y;
-    var view = new Asteroids.GameView(game, ctx);
-    view.start();
+    var game = new Asteroids.Game('game');
+    game.start();
   </script>
 </html>

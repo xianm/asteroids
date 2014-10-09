@@ -2,18 +2,29 @@
   if (typeof window.Asteroids === "undefined") {
     window.Asteroids = {};
   }
-  
+
   var PlayState = Asteroids.PlayState = function (game) {
     this.game = game;
-    this.world = new Asteroids.World(game);
+    this.world = new Asteroids.World(game, {
+      onAsteroidShot: function () { this.score++; }.bind(this),
+      onPlayerHit: function () { 
+        this.lives--; 
+        this.world.player.relocate();
+      }.bind(this)
+    });
+
+    this.lives = Asteroids.Game.MAX_LIVES;
+    this.score = 0;
   };
   
   PlayState.prototype.enter = function () {
-    key('w, up', function () { this.world.ship.power([0, -1]); }.bind(this));
-    key('s, down', function () { this.world.ship.power([0, 1]);  }.bind(this));
-    key('a, left', function () { this.world.ship.power([-1, 0]); }.bind(this));
-    key('d, right', function () { this.world.ship.power([1, 0]);  }.bind(this));
-    key('z, space', function () { this.world.ship.fireBullets();  }.bind(this));
+    var player = this.world.player;
+
+    key('w, up',    player.power.bind(player, [ 0, -1]));
+    key('s, down',  player.power.bind(player, [ 0,  1]));
+    key('a, left',  player.power.bind(player, [-1,  0]));
+    key('d, right', player.power.bind(player, [ 1,  0]));
+    key('z, space', player.fireBullets.bind(player));
   };
   
   PlayState.prototype.exit = function () {
@@ -35,8 +46,8 @@
   };
 
   PlayState.prototype.drawUI = function (ctx) {
-    var scoreTxt = "Score:" + this.game.score;
-    var livesTxt = "Lives:" + this.game.lives;
+    var scoreTxt = "Score: " + this.score;
+    var livesTxt = "Lives: " + this.lives;
     
     Asteroids.Utils.drawText(ctx, scoreTxt, 20, 44, "14pt Courier New");
     Asteroids.Utils.drawText(ctx, livesTxt, 20, 80, "14pt Courier New");
@@ -45,10 +56,8 @@
   PlayState.prototype.step = function () {
     this.world.step();
 
-    if (this.game.lives === 0) {
-      this.game.changeState(new Asteroids.GameOverState(this.game));
-    } else if (this.world.asteroids.length === 0) {
-      this.game.changeState(new Asteroids.WinState(this.game));
+    if (this.lives === 0) {
+      this.game.changeState(new Asteroids.GameOverState(this.game, this.score));
     }
   };
 })();

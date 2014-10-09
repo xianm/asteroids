@@ -3,16 +3,19 @@
     window.Asteroids = {};
   }
   
-  var World = Asteroids.World = function (game) {
+  var World = Asteroids.World = function (game, options) {
     this.game = game;
-    this.ship = new Asteroids.Ship(this);
+    this.player = new Asteroids.Ship(this);
     this.bullets = [];
     this.asteroids = [];
     this.populate(Asteroids.Game.NUM_ASTEROIDS);
+
+    this.onAsteroidShot = options.onAsteroidShot;
+    this.onPlayerHit = options.onPlayerHit;
   };
 
   World.prototype.entities = function () {
-    return this.asteroids.concat(this.ship).concat(this.bullets);
+    return this.asteroids.concat(this.player).concat(this.bullets);
   };
 
   World.prototype.populate = function (count) {
@@ -57,7 +60,7 @@
   };
 
   World.prototype.checkCollisions = function () {
-    var entities = this.bullets.concat(this.ship);
+    var entities = this.bullets.concat(this.player);
     var world = this;
     
     entities.forEach(function (entity) {
