@@ -4,3 +4,6 @@ Asteroids is a game where a player flies through space, blowing dangerous astero
 
  * Written in JavaScript
  * Uses HTML5 Canvas
+
+
+###[Click here to see a live demo!](http://jsasteroids.herokuapp.com)
