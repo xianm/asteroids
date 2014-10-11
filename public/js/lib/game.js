@@ -3,7 +3,7 @@
     window.Asteroids = {};
   }
 
-  Asteroids.FPS = 60;
+  Asteroids.FPS = 24;
   Asteroids.DIMS = { 
     x: 800, 
     y: 600 
@@ -31,6 +31,7 @@
   };
 
   Game.prototype.update = function (delta) {
+    console.log(delta);
     this.asteroids.forEach(function (e) {
       e.update(delta);
     });
