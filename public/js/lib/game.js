@@ -61,9 +61,21 @@
 
     for (var i = 0; i < amount; ++i) {
       this.asteroids.push(new Asteroids.Asteroid({
+        game: this,
         pos: Asteroids.Util.randomVector(minPos, maxPos),
         vel: Asteroids.Util.randomVector(minVel, maxVel)
       }));
     }
+  };
+
+  Game.prototype.wrap = function (pos) {
+    var pad = 75;
+    var w = Asteroids.DIMS.x + pad;
+    var h = Asteroids.DIMS.y + pad;
+
+    return {
+      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
+      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
+    };
   };
 })();

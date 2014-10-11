@@ -12,17 +12,6 @@
     child.prototype = new Surrogate();
   };
 
-  Util.wrap = function (pos) {
-    var pad = 100;
-    var w = Asteroids.DIMS.x + pad;
-    var h = Asteroids.DIMS.y + pad;
-
-    return {
-      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
-      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
-    };
-  };
-
   Util.randomVector = function (min, max) {
     return {
       x: min.x + (Math.random() * (max.x - min.x)),

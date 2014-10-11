@@ -4,6 +4,7 @@
   }
 
   var Entity = Asteroids.Entity = function (options) {
+    this.game = options.game;
     this.pos = options.pos;
     this.vel = options.vel;
     this.wrap = options.wrap || true;
@@ -14,7 +15,7 @@
     this.pos = Asteroids.Util.addVectors(this.pos, dv);
 
     if (this.wrap) {
-      this.pos = Asteroids.Util.wrap(this.pos);
+      this.pos = this.game.wrap(this.pos);
     }
   };
 
