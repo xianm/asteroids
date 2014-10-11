@@ -14,10 +14,40 @@
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
 
   Ship.prototype.render = function (ctx) {
+    var bounds = this.bounds();
+
     ctx.fillStyle = this.color;
-    ctx.fillRect(this.pos.x - (this.size.width / 2),
-                 this.pos.y - (this.size.height / 2),
-                 this.size.width,
-                 this.size.height);
+    ctx.beginPath();
+
+    ctx.moveTo(bounds.nose.x, bounds.nose.y);
+    ctx.lineTo(bounds.tailLeft.x, bounds.tailLeft.y);
+    ctx.lineTo(bounds.tailRight.x, bounds.tailRight.y);
+
+    ctx.fill();
+    ctx.closePath();
+  };
+
+  Ship.prototype.bounds = function () {
+    var halfH = this.size.height / 2;
+    var halfW = this.size.width / 2;
+
+    var bounds = {
+      nose: { 
+        x: this.pos.x, 
+        y: this.pos.y - halfH
+      },
+
+      tailLeft: {
+        x: this.pos.x - halfW,
+        y: this.pos.y + halfH
+      },
+
+      tailRight: {
+        x: this.pos.x + halfW, 
+        y: this.pos.y + halfH
+      }
+    };
+
+    return bounds;
   };
 })();

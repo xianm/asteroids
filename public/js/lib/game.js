@@ -77,8 +77,6 @@
       pos: Asteroids.Util.randomVector(minPos, maxPos),
       vel: { x: 0, y: 0 }
     });
-
-    console.log(this.ship);
   };
 
   Game.prototype.spawnAsteroids = function (amount) {
