@@ -1,7 +1,30 @@
 html, body {
   padding: 0;
   margin: 0;
-  background-color: #000;
+  background-color: #EEE;
+
+  height: 100%;
 
   overflow: hidden;
+
+  font: 12pt Helvetica;
+}
+
+.wrapper {
+  width: 800px;
+  height: 100%;
+
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+
+  font-size: 1.25em;
+}
+
+canvas {
+  background: #000000;
+
+  box-shadow: 5px 5px 15px #112233;
 }
