@@ -19,17 +19,28 @@
     };
   };
 
-  Util.scaleVector = function (vector, scalar) {
+  Util.addVectors = function (vec1, vec2) {
     return {
-      x: vector.x * scalar,
-      y: vector.y * scalar
+      x: vec1.x + vec2.x,
+      y: vec1.y + vec2.y
     };
   };
 
-  Util.addVectors = function (v1, v2) {
+  Util.scaleVector = function (vec, scalar) {
     return {
-      x: v1.x + v2.x,
-      y: v1.y + v2.y
+      x: vec.x * scalar,
+      y: vec.y * scalar
+    };
+  };
+
+  Util.rotateVector = function (vec, origin, angle) {
+    var radians = (Math.PI / 180) * angle;
+    var cos = Math.cos(radians);
+    var sin = Math.sin(radians);
+
+    return {
+      x: (cos * (vec.x - origin.x)) - (sin * (vec.y - origin.y)) + origin.x,
+      y: (sin * (vec.x - origin.x)) + (cos * (vec.y - origin.y)) + origin.y
     };
   };
 })();

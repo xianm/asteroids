@@ -8,7 +8,7 @@
 
     this.color = "#EEE";
     this.size = { width: 20, height: 30 };
-    this.rotation = 0;
+    this.rotation = Math.random() * 360;
   };
 
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
@@ -48,6 +48,12 @@
       }
     };
 
-    return bounds;
+    var rotate = Asteroids.Util.rotateVector;
+
+    return {
+      nose: rotate(bounds.nose, this.pos, this.rotation),
+      tailLeft: rotate(bounds.tailLeft, this.pos, this.rotation),
+      tailRight: rotate(bounds.tailRight, this.pos, this.rotation)
+    };
   };
 })();
