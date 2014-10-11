@@ -6,8 +6,8 @@
   var Asteroid = Asteroids.Asteroid = function (options) {
     Asteroids.Entity.call(this, options);
 
-    this.radius = 55;
     this.color = "#999";
+    this.radius = 55;
   };
 
   Asteroids.Util.inherits(Asteroid, Asteroids.Entity); 

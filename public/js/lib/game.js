@@ -14,6 +14,8 @@
     this.ctx = this.initializeCanvas(canvasId);
 
     this.asteroids = [];
+
+    this.spawnPlayerShip();
     this.spawnAsteroids(Asteroids.NUM_ASTEROIDS);
  };
 
@@ -31,7 +33,8 @@
   };
 
   Game.prototype.update = function (delta) {
-    console.log(delta);
+    this.ship.update(delta);
+
     this.asteroids.forEach(function (e) {
       e.update(delta);
     });
@@ -39,6 +42,8 @@
 
   Game.prototype.render = function (ctx) {
     ctx.clearRect(0, 0, Asteroids.DIMS.x, Asteroids.DIMS.y);
+
+    this.ship.render(ctx);
 
     this.asteroids.forEach(function (e) {
       e.render(ctx);
@@ -50,6 +55,30 @@
     canvas.width = Asteroids.DIMS.x;
     canvas.height = Asteroids.DIMS.y;
     return canvas.getContext('2d');
+  };
+
+  Game.prototype.wrap = function (pos) {
+    var pad = 75;
+    var w = Asteroids.DIMS.x + pad;
+    var h = Asteroids.DIMS.y + pad;
+
+    return {
+      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
+      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
+    };
+  };
+
+  Game.prototype.spawnPlayerShip = function () {
+    var minPos = { x: 150, y: 150 };
+    var maxPos = { x: Asteroids.DIMS.x - 150, y: Asteroids.DIMS.y - 150};
+
+    this.ship = new Asteroids.Ship({
+      game: this,
+      pos: Asteroids.Util.randomVector(minPos, maxPos),
+      vel: { x: 0, y: 0 }
+    });
+
+    console.log(this.ship);
   };
 
   Game.prototype.spawnAsteroids = function (amount) {
@@ -66,16 +95,5 @@
         vel: Asteroids.Util.randomVector(minVel, maxVel)
       }));
     }
-  };
-
-  Game.prototype.wrap = function (pos) {
-    var pad = 75;
-    var w = Asteroids.DIMS.x + pad;
-    var h = Asteroids.DIMS.y + pad;
-
-    return {
-      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
-      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
-    };
   };
 })();
