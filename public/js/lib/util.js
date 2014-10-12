@@ -10,6 +10,7 @@
     function Surrogate () { this.constructor = child; }
     Surrogate.prototype = parent.prototype;
     child.prototype = new Surrogate();
+    child.prototype.$super = parent.prototype;
   };
 
   Util.randomVector = function (min, max) {
@@ -42,5 +43,19 @@
       x: (cos * (vec.x - origin.x)) - (sin * (vec.y - origin.y)) + origin.x,
       y: (sin * (vec.x - origin.x)) + (cos * (vec.y - origin.y)) + origin.y
     };
+  };
+
+  Util.clampVector = function (vec, min, max) {
+    var clamped = {
+      x: vec.x,
+      y: vec.y
+    };
+    
+    if (vec.x < min) { clamped.x = min; }
+    if (vec.x > max) { clamped.x = max; }
+    if (vec.y < min) { clamped.y = min; }
+    if (vec.y > max) { clamped.y = max; }
+
+    return clamped;
   };
 })();

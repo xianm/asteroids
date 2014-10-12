@@ -3,12 +3,12 @@
     window.Asteroids = {};
   }
 
-  Asteroids.FPS = 24;
+  Asteroids.FPS = 30;
   Asteroids.DIMS = { 
     x: 800, 
     y: 600 
   };
-  Asteroids.NUM_ASTEROIDS = 5;
+  Asteroids.NUM_ASTEROIDS = 1;
 
   var Game = Asteroids.Game = function (canvasId) {
     this.ctx = this.initializeCanvas(canvasId);
@@ -17,6 +17,8 @@
 
     this.spawnPlayerShip();
     this.spawnAsteroids(Asteroids.NUM_ASTEROIDS);
+
+    this.bindKeys();
  };
 
   Game.prototype.start = function () {
@@ -57,17 +59,6 @@
     return canvas.getContext('2d');
   };
 
-  Game.prototype.wrap = function (pos) {
-    var pad = 75;
-    var w = Asteroids.DIMS.x + pad;
-    var h = Asteroids.DIMS.y + pad;
-
-    return {
-      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
-      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
-    };
-  };
-
   Game.prototype.spawnPlayerShip = function () {
     var minPos = { x: 150, y: 150 };
     var maxPos = { x: Asteroids.DIMS.x - 150, y: Asteroids.DIMS.y - 150};
@@ -93,5 +84,24 @@
         vel: Asteroids.Util.randomVector(minVel, maxVel)
       }));
     }
+  };
+
+  Game.prototype.wrap = function (pos) {
+    var pad = 75;
+    var w = Asteroids.DIMS.x + pad;
+    var h = Asteroids.DIMS.y + pad;
+
+    return {
+      x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
+      y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
+    };
+  };
+
+  Game.prototype.bindKeys = function () {
+    var ship = this.ship;
+    key('up', ship.accelerate.bind(ship, 50));
+    key('down', ship.brake.bind(ship));
+    key('left', ship.rotate.bind(ship, -10));
+    key('right', ship.rotate.bind(ship, 10));
   };
 })();
