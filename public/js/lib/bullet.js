@@ -14,7 +14,7 @@
 
   Bullet.COLOR = "#00FF00";
   Bullet.SPEED = 450;
-  Bullet.TTL = 1;
+  Bullet.TTL = 1.5;
 
   Bullet.prototype.update = function (delta) {
     this.$super.update.call(this, delta);
@@ -31,5 +31,13 @@
     ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
+  };
+
+  Bullet.prototype.collidedWith = function (entity) {
+    if (entity instanceof Asteroids.Asteroid) {
+      this.game.removeEntity(this);
+      this.game.removeEntity(entity);
+      this.game.spawnAsteroids(1);
+    }
   };
 })();

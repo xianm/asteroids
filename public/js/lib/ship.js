@@ -115,4 +115,15 @@
       this.immune = false;
     }.bind(this), seconds * 1000);
   };
+
+  Ship.prototype.collidedWith = function (entity) {
+    if (this.immune) {
+      return;
+    }
+
+    if (entity instanceof Asteroids.Asteroid) {
+      this.game.removeEntity(this);
+      this.game.spawnPlayerShip();
+    }
+  };
 })();

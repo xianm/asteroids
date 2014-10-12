@@ -20,4 +20,6 @@
   };
 
   Entity.prototype.render = function (ctx) { };
+  Entity.prototype.collidesWith = function (entity) { };
+  Entity.prototype.collidedWith = function (entity) { };
 })();

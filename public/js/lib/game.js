@@ -37,8 +37,27 @@
   };
 
   Game.prototype.update = function (delta) {
-    this.entities().forEach(function (e) {
+    var self = this;
+
+    self.entities().forEach(function (e) {
       e.update(delta);
+    });
+
+    var nonAsteroids = self.bullets.concat(this.ship);
+
+    self.asteroids.forEach(function (a) {
+      var bulletsLength = self.bullets.length;
+      for (var i = 0; i < bulletsLength; ++i) {
+        var b = self.bullets[i];
+        if (a.collidesWith(b)) {
+          b.collidedWith(a);
+          return;
+        }
+      }
+
+      if (a.collidesWith(self.ship)) {
+        self.ship.collidedWith(a);
+      }
     });
   };
 

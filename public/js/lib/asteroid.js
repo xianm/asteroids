@@ -19,4 +19,20 @@
     ctx.fill();
     ctx.closePath();
   };
+
+  Asteroid.prototype.collidesWith = function (entity) {
+    var dist = 0;
+
+    if (entity instanceof Asteroids.Bullet) {
+      dist = Asteroids.Util.distance(this.pos, entity.pos);
+      return dist < (this.radius + entity.radius);
+    }
+
+    if (entity instanceof Asteroids.Ship) {
+      dist = Asteroids.Util.distance(this.pos, entity.pos);
+      return dist < (this.radius + entity.size.width / 2);
+    }
+
+    return false;
+  };
 })();
