@@ -27,6 +27,12 @@
     };
   };
 
+  Util.distance = function (vec1, vec2) {
+    var a2 = Math.pow(vec1.x - vec2.x, 2);
+    var b2 = Math.pow(vec1.y - vec2.y, 2);
+    return Math.sqrt(a2 + b2);
+  };
+
   Util.scaleVector = function (vec, scalar) {
     return {
       x: vec.x * scalar,

@@ -13,8 +13,8 @@
   Asteroids.Util.inherits(Bullet, Asteroids.Entity);
 
   Bullet.COLOR = "#00FF00";
-  Bullet.SPEED = 350;
-  Bullet.TTL = 1.75;
+  Bullet.SPEED = 450;
+  Bullet.TTL = 1;
 
   Bullet.prototype.update = function (delta) {
     this.$super.update.call(this, delta);

@@ -10,15 +10,21 @@
     this.immuneColor = "#00FF00";
     this.size = { width: 20, height: 30 };
     this.rotation = Math.random() * 360;
+    this.gunCooldown = 0;
   };
 
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
 
   Ship.IMMUNITY_TTL = 3;
-  Ship.MAX_SPEED = 250;
+  Ship.MAX_SPEED = 300;
+  Ship.GUN_COOLDOWN = 0.3;
 
   Ship.prototype.update = function (delta) {
     this.$super.update.call(this, delta);
+
+    if (this.gunCooldown > 0) {
+      this.gunCooldown -= delta;
+    }
   };
 
   Ship.prototype.render = function (ctx) {
@@ -67,7 +73,19 @@
 
   Ship.prototype.accelerate = function (impulse) {
     var dv = Asteroids.Util.scaleVector(this.dir(), impulse);
-    this.vel = Asteroids.Util.addVectors(this.vel, dv);
+    var vel = Asteroids.Util.addVectors(this.vel, dv);
+
+    var pixelsPerSec = Asteroids.Util.distance(this.pos, 
+      Asteroids.Util.addVectors(this.pos, vel));
+
+    if (pixelsPerSec > Ship.MAX_SPEED) {
+      var absX = Math.abs(vel.x);
+      var absY = Math.abs(vel.y);
+      var scale = Ship.MAX_SPEED / ((absX > absY) ? absX : absY);
+      vel = Asteroids.Util.scaleVector(vel, scale);
+    }
+
+    this.vel = vel;
   };
 
   Ship.prototype.brake = function () {
@@ -75,16 +93,19 @@
   };
 
   Ship.prototype.rotate = function (da) {
-    // TODO: rotation velocity
     this.rotation += da;
   };
 
   Ship.prototype.shoot = function () {
-    this.game.addEntity(new Asteroids.Bullet({
-      game: this.game,
-      pos: this.bounds().nose,
-      vel: Asteroids.Util.scaleVector(this.dir(), Asteroids.Bullet.SPEED)
-    }));
+    if (this.gunCooldown <= 0) {
+      this.game.addEntity(new Asteroids.Bullet({
+        game: this.game,
+        pos: this.bounds().nose,
+        vel: Asteroids.Util.scaleVector(this.dir(), Asteroids.Bullet.SPEED)
+      }));
+
+      this.gunCooldown = Ship.GUN_COOLDOWN;
+    }
   };
 
   Ship.prototype.makeImmune = function (seconds) {
