@@ -7,25 +7,17 @@
     Asteroids.Entity.call(this, options);
 
     this.color = "#EEE";
+    this.immuneColor = "#00FF00";
     this.size = { width: 20, height: 30 };
     this.rotation = Math.random() * 360;
-
-    this.immuneTimer = 3;
-    this.immuneColor = "#00AA00";
-    this.immune = true;
   };
 
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
 
+  Ship.IMMUNITY_TTL = 3;
   Ship.MAX_SPEED = 250;
 
   Ship.prototype.update = function (delta) {
-    if (this.immune) {
-      this.immuneTimer -= delta;
-      if (this.immuneTimer <= 0) {
-        this.immune = false;
-      }
-    }
     this.$super.update.call(this, delta);
   };
 
@@ -65,16 +57,17 @@
     };
   };
 
-  Ship.prototype.accelerate = function (impulse) {
+  Ship.prototype.dir = function () {
     var bounds = this.bounds();
-    var foo = {
+    return {
       x: (bounds.nose.x - this.pos.x) / (this.size.height / 2),
       y: (bounds.nose.y - this.pos.y) / (this.size.height / 2)
     };
-    var dv = Asteroids.Util.scaleVector(foo, impulse);
+  };
 
+  Ship.prototype.accelerate = function (impulse) {
+    var dv = Asteroids.Util.scaleVector(this.dir(), impulse);
     this.vel = Asteroids.Util.addVectors(this.vel, dv);
-    this.vel = Asteroids.Util.clampVector(this.vel, -Ship.MAX_SPEED, Ship.MAX_SPEED);
   };
 
   Ship.prototype.brake = function () {
@@ -84,5 +77,21 @@
   Ship.prototype.rotate = function (da) {
     // TODO: rotation velocity
     this.rotation += da;
+  };
+
+  Ship.prototype.shoot = function () {
+    this.game.addEntity(new Asteroids.Bullet({
+      game: this.game,
+      pos: this.bounds().nose,
+      vel: Asteroids.Util.scaleVector(this.dir(), Asteroids.Bullet.SPEED)
+    }));
+  };
+
+  Ship.prototype.makeImmune = function (seconds) {
+    this.immune = true;
+
+    setTimeout(function () {
+      this.immune = false;
+    }.bind(this), seconds * 1000);
   };
 })();

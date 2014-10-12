@@ -14,6 +14,7 @@
     this.ctx = this.initializeCanvas(canvasId);
 
     this.asteroids = [];
+    this.bullets = [];
 
     this.spawnPlayerShip();
     this.spawnAsteroids(Asteroids.NUM_ASTEROIDS);
@@ -27,6 +28,7 @@
     setInterval(function () {
       var now = Date.now();
 
+      this.handleKeys();
       this.update((now - then) / 1000.0);
       this.render(this.ctx);
 
@@ -35,9 +37,7 @@
   };
 
   Game.prototype.update = function (delta) {
-    this.ship.update(delta);
-
-    this.asteroids.forEach(function (e) {
+    this.entities().forEach(function (e) {
       e.update(delta);
     });
   };
@@ -45,9 +45,7 @@
   Game.prototype.render = function (ctx) {
     ctx.clearRect(0, 0, Asteroids.DIMS.x, Asteroids.DIMS.y);
 
-    this.ship.render(ctx);
-
-    this.asteroids.forEach(function (e) {
+    this.entities().forEach(function (e) {
       e.render(ctx);
     });
   };
@@ -68,6 +66,8 @@
       pos: Asteroids.Util.randomVector(minPos, maxPos),
       vel: { x: 0, y: 0 }
     });
+
+    this.ship.makeImmune(Asteroids.Ship.IMMUNITY_TTL);
   };
 
   Game.prototype.spawnAsteroids = function (amount) {
@@ -78,7 +78,7 @@
     var maxVel = { x: 150, y: 150 };
 
     for (var i = 0; i < amount; ++i) {
-      this.asteroids.push(new Asteroids.Asteroid({
+      this.addEntity(new Asteroids.Asteroid({
         game: this,
         pos: Asteroids.Util.randomVector(minPos, maxPos),
         vel: Asteroids.Util.randomVector(minVel, maxVel)
@@ -97,11 +97,55 @@
     };
   };
 
+  keys = [];
   Game.prototype.bindKeys = function () {
-    var ship = this.ship;
-    key('up', ship.accelerate.bind(ship, 50));
-    key('down', ship.brake.bind(ship));
-    key('left', ship.rotate.bind(ship, -10));
-    key('right', ship.rotate.bind(ship, 10));
+    document.onkeyup = function (e) { keys[e.keyCode] = false; };
+    document.onkeydown = function (e) { keys[e.keyCode] = true; };
+  };
+
+  Game.prototype.handleKeys = function () {
+    if (keys[38]) { // UP
+      this.ship.accelerate(40);
+    }
+    if (keys[40]) { // DOWN
+      this.ship.brake();
+    }
+    if (keys[37]) { // LEFT
+      this.ship.rotate(-20);
+    }
+    if (keys[39]) { // RIGHT
+      this.ship.rotate(20);
+    }
+    if (keys[32]) { // SPACE
+      this.ship.shoot();
+    }
+  };
+
+  Game.prototype.entities = function () {
+    return [this.ship].concat(this.asteroids).concat(this.bullets);
+  };
+
+  Game.prototype.addEntity = function (entity) {
+    if (entity instanceof Asteroids.Bullet) {
+      this.bullets.push(entity);
+    } else if (entity instanceof Asteroids.Asteroid) {
+      this.asteroids.push(entity);
+    } 
+  };
+
+  Game.prototype.removeEntity = function (entity) {
+    var index = -1;
+
+    if (entity instanceof Asteroids.Bullet) {
+      index = this.bullets.indexOf(entity);
+      if (index > -1) {
+        this.bullets.splice(index, 1);
+      }
+    } else if (entity instanceof Asteroids.Asteroid) {
+      index = this.asteroids.indexOf(entity);
+      if (index > -1) {
+        this.asteroids.splice(index, 1);
+      }
+    } 
   };
 })();
