@@ -71,21 +71,21 @@
     };
   };
 
+  Ship.prototype.speed = function () {
+    return Asteroids.Util.distance(this.pos, 
+      Asteroids.Util.addVectors(this.pos, this.vel));
+  };
+
   Ship.prototype.accelerate = function (impulse) {
     var dv = Asteroids.Util.scaleVector(this.dir(), impulse);
-    var vel = Asteroids.Util.addVectors(this.vel, dv);
+    this.vel = Asteroids.Util.addVectors(this.vel, dv);
 
-    var pixelsPerSec = Asteroids.Util.distance(this.pos, 
-      Asteroids.Util.addVectors(this.pos, vel));
-
-    if (pixelsPerSec > Ship.MAX_SPEED) {
-      var absX = Math.abs(vel.x);
-      var absY = Math.abs(vel.y);
-      var scale = Ship.MAX_SPEED / ((absX > absY) ? absX : absY);
-      vel = Asteroids.Util.scaleVector(vel, scale);
+    if (this.speed() > Ship.MAX_SPEED) {
+      var absX = Math.abs(this.vel.x);
+      var absY = Math.abs(this.vel.y);
+      var scalar = Ship.MAX_SPEED / ((absX > absY) ? absX : absY);
+      this.vel = Asteroids.Util.scaleVector(this.vel, scalar);
     }
-
-    this.vel = vel;
   };
 
   Ship.prototype.brake = function () {
