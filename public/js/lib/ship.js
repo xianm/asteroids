@@ -16,7 +16,7 @@
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
 
   Ship.IMMUNITY_TTL = 3;
-  Ship.MAX_SPEED = 300;
+  Ship.MAX_SPEED = 250;
   Ship.GUN_COOLDOWN = 0.3;
 
   Ship.prototype.update = function (delta) {
