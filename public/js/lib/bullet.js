@@ -35,6 +35,7 @@
 
   Bullet.prototype.collidedWith = function (entity) {
     if (entity instanceof Asteroids.Asteroid) {
+      this.game.score += entity.bounty;
       this.game.removeEntity(this);
       this.game.removeEntity(entity);
 
@@ -48,14 +49,16 @@
           game: this.game,
           pos: entity.pos,
           vel: Asteroids.Util.rotateVector(dblVel, { x: 0, y: 0 }, 45),
-          radius: childRadius
+          radius: childRadius,
+          bounty: entity.bounty * 2
         }));
 
         this.game.addEntity(new Asteroids.Asteroid({
           game: this.game,
           pos: entity.pos,
           vel: Asteroids.Util.rotateVector(dblVel, { x: 0, y: 0 }, -45),
-          radius: childRadius
+          radius: childRadius,
+          bounty: entity.bounty * 2
         }));
       }
     }

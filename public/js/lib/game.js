@@ -8,16 +8,17 @@
     x: 800, 
     y: 600 
   };
-  Asteroids.NUM_ASTEROIDS = 1;
 
   var Game = Asteroids.Game = function (canvasId) {
     this.ctx = this.initializeCanvas(canvasId);
+
+    this.level = 0;
+    this.score = 0;
 
     this.asteroids = [];
     this.bullets = [];
 
     this.spawnPlayerShip();
-    this.spawnAsteroids(Asteroids.NUM_ASTEROIDS);
 
     this.bindKeys();
  };
@@ -59,6 +60,10 @@
         self.ship.collidedWith(a);
       }
     });
+
+    if (this.asteroids.length === 0) {
+      this.spawnAsteroids(++this.level);
+    }
   };
 
   Game.prototype.render = function (ctx) {

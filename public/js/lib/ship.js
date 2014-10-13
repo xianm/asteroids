@@ -17,7 +17,7 @@
 
   Ship.IMMUNITY_TTL = 3;
   Ship.MAX_SPEED = 250;
-  Ship.GUN_COOLDOWN = 0.3;
+  Ship.GUN_COOLDOWN = 0.2;
 
   Ship.prototype.update = function (delta) {
     this.$super.update.call(this, delta);
