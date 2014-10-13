@@ -37,7 +37,27 @@
     if (entity instanceof Asteroids.Asteroid) {
       this.game.removeEntity(this);
       this.game.removeEntity(entity);
-      this.game.spawnAsteroids(1);
+
+      var childRadius = entity.radius /= 2;
+
+      if (childRadius >= Asteroids.Asteroid.MIN_RADIUS) {
+        var tip = Asteroids.Util.addVectors(entity.vel, entity.pos);
+        var dblVel = Asteroids.Util.scaleVector(entity.vel, 2);
+
+        this.game.addEntity(new Asteroids.Asteroid({
+          game: this.game,
+          pos: entity.pos,
+          vel: Asteroids.Util.rotateVector(dblVel, { x: 0, y: 0 }, 45),
+          radius: childRadius
+        }));
+
+        this.game.addEntity(new Asteroids.Asteroid({
+          game: this.game,
+          pos: entity.pos,
+          vel: Asteroids.Util.rotateVector(dblVel, { x: 0, y: 0 }, -45),
+          radius: childRadius
+        }));
+      }
     }
   };
 })();

@@ -7,10 +7,13 @@
     Asteroids.Entity.call(this, options);
 
     this.color = "#999";
-    this.radius = 55;
+    this.radius = options.radius || Asteroid.MAX_RADIUS;
   };
 
   Asteroids.Util.inherits(Asteroid, Asteroids.Entity); 
+
+  Asteroid.MAX_RADIUS = 60;
+  Asteroid.MIN_RADIUS = 15;
 
   Asteroid.prototype.render = function (ctx) {
     ctx.fillStyle = this.color;
@@ -34,5 +37,12 @@
     }
 
     return false;
+  };
+
+  Asteroid.prototype.dir = function () {
+    return {
+      x: (bounds.nose.x - this.pos.x) / (this.size.height / 2),
+      y: (bounds.nose.y - this.pos.y) / (this.size.height / 2)
+    };
   };
 })();

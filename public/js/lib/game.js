@@ -93,8 +93,8 @@
     var minPos = { x: 50, y: 50 };
     var maxPos = { x: Asteroids.DIMS.x - 50, y: Asteroids.DIMS.y - 50};
 
-    var minVel = { x: -150, y: -150 };
-    var maxVel = { x: 150, y: 150 };
+    var minVel = { x: -50, y: -50 };
+    var maxVel = { x: 50, y: 50 };
 
     for (var i = 0; i < amount; ++i) {
       this.addEntity(new Asteroids.Asteroid({
@@ -124,16 +124,16 @@
 
   Game.prototype.handleKeys = function () {
     if (keys[38]) { // UP
-      this.ship.accelerate(40);
+      this.ship.accelerate(30);
     }
     if (keys[40]) { // DOWN
       this.ship.brake();
     }
     if (keys[37]) { // LEFT
-      this.ship.rotate(-20);
+      this.ship.rotate(-15);
     }
     if (keys[39]) { // RIGHT
-      this.ship.rotate(20);
+      this.ship.rotate(15);
     }
     if (keys[32]) { // SPACE
       this.ship.shoot();
