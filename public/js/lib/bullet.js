@@ -7,12 +7,14 @@
     Asteroids.Entity.call(this, options);
 
     this.life = 0;
-    this.radius = 3;
+    this.radius = 2;
+    this.color = 'hsl(' + Bullet.NEXT_HUE + ', 100%, 60%)';
+    Bullet.NEXT_HUE += 3;
   };
 
   Asteroids.Util.inherits(Bullet, Asteroids.Entity);
 
-  Bullet.COLOR = "#00FF00";
+  Bullet.NEXT_HUE = 0;
   Bullet.SPEED = 450;
   Bullet.TTL = 1.5;
 
@@ -27,7 +29,7 @@
   };
 
   Bullet.prototype.render = function (ctx) {
-    ctx.fillStyle = Bullet.COLOR;
+    ctx.fillStyle = this.color;
     ctx.beginPath();
     ctx.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
     ctx.fill();
