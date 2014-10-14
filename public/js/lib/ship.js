@@ -76,8 +76,8 @@
         y: (bounds.tailLeft.y - this.pos.y) / (this.size.height / 2)
       },
       tailCenter: {
-        x: (bounds.tailCenter.x - this.pos.x) / (this.size.height / 2),
-        y: (bounds.tailCenter.y - this.pos.y) / (this.size.height / 2)
+        x: (bounds.tailCenter.x - this.pos.x) / (this.size.height / 4),
+        y: (bounds.tailCenter.y - this.pos.y) / (this.size.height / 4)
       },
       tailRight: {
         x: (bounds.tailRight.x - this.pos.x) / (this.size.height / 2),
