@@ -28,10 +28,6 @@
     if (this.gunCooldown > 0) {
       this.gunCooldown -= delta;
     }
-
-    if (this.thrusterCooldown > 0) {
-      this.thrusterCooldown -= delta;
-    }
   };
 
   Ship.prototype.render = function (ctx) {
@@ -111,6 +107,7 @@
         vel: Asteroids.Util.scaleVector(this.dir(), Asteroids.Bullet.SPEED)
       }));
 
+      this.game.shotsFired++;
       this.gunCooldown = Ship.GUN_COOLDOWN;
     }
   };

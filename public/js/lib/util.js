@@ -50,4 +50,10 @@
       y: (sin * (vec.x - origin.x)) + (cos * (vec.y - origin.y)) + origin.y
     };
   };
+
+  Util.drawText = function (ctx, text, x, y) {
+    ctx.font = "12pt Courier New, Courier, monospace"
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillText(text, x, y);
+  };
 })();

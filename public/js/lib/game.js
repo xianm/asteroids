@@ -9,12 +9,15 @@
     y: 600
   };
   Asteroids.DIM_PADDING = 15;
+  Asteroids.BULLET_PENALTY = 1;
 
   var Game = Asteroids.Game = function (canvasId) {
     this.ctx = this.initializeCanvas(canvasId);
 
     this.level = 0;
     this.score = 0;
+    this.shotsFired = 0;
+    this.shotsHit = 0;
 
     this.asteroids = [];
     this.bullets = [];
@@ -78,6 +81,24 @@
     this.entities().forEach(function (e) {
       e.render(ctx);
     });
+
+    this.renderUI(ctx);
+  };
+
+  Game.prototype.accuracy = function () {
+    var accuracy = this.shotsHit / this.shotsFired;
+    return (accuracy) ? accuracy : 0;
+  };
+
+  Game.prototype.renderUI = function (ctx) {
+    var levelTxt = "Level    " + this.level;
+    Asteroids.Util.drawText(ctx, levelTxt, 10, 25);
+
+    var scoreTxt = "Score    " + this.score;
+    Asteroids.Util.drawText(ctx, scoreTxt, 10, 55);
+
+    var accuracyTxt = "Accuracy " + (this.accuracy() * 100).toFixed(2) + "%";
+    Asteroids.Util.drawText(ctx, accuracyTxt, 10, 85);
   };
 
   Game.prototype.initializeCanvas = function (canvasId) {
@@ -121,6 +142,10 @@
       x: (pos.x > w) ? pos.x % w : (pos.x < -pad) ? (pos.x + w) % w : pos.x,
       y: (pos.y > h) ? pos.y % h : (pos.y < -pad) ? (pos.y + h) % h : pos.y
     };
+  };
+
+  Game.prototype.updateScore = function (amount) {
+    this.score = Math.max(0, this.score + (amount * this.level));
   };
 
   keys = [];

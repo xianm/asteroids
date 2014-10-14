@@ -22,6 +22,7 @@
     this.life += delta;
     if (this.life > Bullet.TTL) {
       this.game.removeEntity(this);
+      this.game.updateScore(-Asteroids.BULLET_PENALTY);
     }
   };
 
@@ -35,7 +36,8 @@
 
   Bullet.prototype.collidedWith = function (entity) {
     if (entity instanceof Asteroids.Asteroid) {
-      this.game.score += entity.bounty;
+      this.game.updateScore(entity.bounty);
+      this.game.shotsHit++;
       this.game.removeEntity(this);
       this.game.removeEntity(entity);
 
