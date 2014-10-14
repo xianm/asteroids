@@ -10,6 +10,7 @@
     this.immuneColor = "#00FF00";
     this.size = { width: 20, height: 30 };
     this.rotation = Math.random() * 360;
+    this.thrusterCooldown = 0;
     this.gunCooldown = 0;
   };
 
@@ -17,6 +18,8 @@
 
   Ship.IMMUNITY_TTL = 3;
   Ship.MAX_SPEED = 250;
+  Ship.ACCELERATION = 750;
+  Ship.ROTATE_SPEED = 375;
   Ship.GUN_COOLDOWN = 0.2;
 
   Ship.prototype.update = function (delta) {
@@ -24,6 +27,10 @@
 
     if (this.gunCooldown > 0) {
       this.gunCooldown -= delta;
+    }
+
+    if (this.thrusterCooldown > 0) {
+      this.thrusterCooldown -= delta;
     }
   };
 
@@ -72,7 +79,7 @@
   };
 
   Ship.prototype.speed = function () {
-    return Asteroids.Util.distance(this.pos, 
+    return Asteroids.Util.distance(this.pos,
       Asteroids.Util.addVectors(this.pos, this.vel));
   };
 

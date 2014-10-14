@@ -4,10 +4,11 @@
   }
 
   Asteroids.FPS = 30;
-  Asteroids.DIMS = { 
-    x: 800, 
-    y: 600 
+  Asteroids.DIMS = {
+    x: 800,
+    y: 600
   };
+  Asteroids.DIM_PADDING = 15;
 
   var Game = Asteroids.Game = function (canvasId) {
     this.ctx = this.initializeCanvas(canvasId);
@@ -29,7 +30,6 @@
     setInterval(function () {
       var now = Date.now();
 
-      this.handleKeys();
       this.update((now - then) / 1000.0);
       this.render(this.ctx);
 
@@ -38,15 +38,25 @@
   };
 
   Game.prototype.update = function (delta) {
-    var self = this;
+    this.handleKeys(delta);
 
-    self.entities().forEach(function (e) {
+    this.entities().forEach(function (e) {
       e.update(delta);
     });
 
+    this.checkCollisions();
+
+    if (this.asteroids.length === 0) {
+      this.spawnAsteroids(++this.level * 2);
+      this.ship.makeImmune(Asteroids.Ship.IMMUNITY_TTL);
+    }
+  };
+
+  Game.prototype.checkCollisions = function () {
+    var self = this;
     var nonAsteroids = self.bullets.concat(this.ship);
 
-    self.asteroids.forEach(function (a) {
+    this.asteroids.forEach(function (a) {
       var bulletsLength = self.bullets.length;
       for (var i = 0; i < bulletsLength; ++i) {
         var b = self.bullets[i];
@@ -60,10 +70,6 @@
         self.ship.collidedWith(a);
       }
     });
-
-    if (this.asteroids.length === 0) {
-      this.spawnAsteroids(++this.level);
-    }
   };
 
   Game.prototype.render = function (ctx) {
@@ -98,20 +104,16 @@
     var minPos = { x: 50, y: 50 };
     var maxPos = { x: Asteroids.DIMS.x - 50, y: Asteroids.DIMS.y - 50};
 
-    var minVel = { x: -50, y: -50 };
-    var maxVel = { x: 50, y: 50 };
-
     for (var i = 0; i < amount; ++i) {
       this.addEntity(new Asteroids.Asteroid({
         game: this,
         pos: Asteroids.Util.randomVector(minPos, maxPos),
-        vel: Asteroids.Util.randomVector(minVel, maxVel)
       }));
     }
   };
 
   Game.prototype.wrap = function (pos) {
-    var pad = 75;
+    var pad = Asteroids.DIM_PADDING;
     var w = Asteroids.DIMS.x + pad;
     var h = Asteroids.DIMS.y + pad;
 
@@ -127,18 +129,18 @@
     document.onkeydown = function (e) { keys[e.keyCode] = true; };
   };
 
-  Game.prototype.handleKeys = function () {
+  Game.prototype.handleKeys = function (delta) {
     if (keys[38]) { // UP
-      this.ship.accelerate(30);
+      this.ship.accelerate(Asteroids.Ship.ACCELERATION * delta);
     }
     if (keys[40]) { // DOWN
       this.ship.brake();
     }
     if (keys[37]) { // LEFT
-      this.ship.rotate(-15);
+      this.ship.rotate(-Asteroids.Ship.ROTATE_SPEED * delta);
     }
     if (keys[39]) { // RIGHT
-      this.ship.rotate(15);
+      this.ship.rotate(Asteroids.Ship.ROTATE_SPEED * delta);
     }
     if (keys[32]) { // SPACE
       this.ship.shoot();
@@ -154,7 +156,7 @@
       this.bullets.push(entity);
     } else if (entity instanceof Asteroids.Asteroid) {
       this.asteroids.push(entity);
-    } 
+    }
   };
 
   Game.prototype.removeEntity = function (entity) {
@@ -170,6 +172,6 @@
       if (index > -1) {
         this.asteroids.splice(index, 1);
       }
-    } 
+    }
   };
 })();
