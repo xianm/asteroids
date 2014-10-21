@@ -68,21 +68,10 @@
 
   Ship.prototype.dir = function () {
     var bounds = this.bounds();
+
     return {
       x: (bounds.nose.x - this.pos.x) / (this.size.height / 2),
       y: (bounds.nose.y - this.pos.y) / (this.size.height / 2),
-      tailLeft: {
-        x: (bounds.tailLeft.x - this.pos.x) / (this.size.height / 2),
-        y: (bounds.tailLeft.y - this.pos.y) / (this.size.height / 2)
-      },
-      tailCenter: {
-        x: (bounds.tailCenter.x - this.pos.x) / (this.size.height / 4),
-        y: (bounds.tailCenter.y - this.pos.y) / (this.size.height / 4)
-      },
-      tailRight: {
-        x: (bounds.tailRight.x - this.pos.x) / (this.size.height / 2),
-        y: (bounds.tailRight.y - this.pos.y) / (this.size.height / 2)
-      }
     };
   };
 
@@ -113,37 +102,32 @@
 
   Ship.prototype.shoot = function () {
     if (this.gunCooldown <= 0) {
-      this.game.addEntity(new Asteroids.Bullet({
-        game: this.game,
-        pos: this.bounds().nose,
-        vel: Asteroids.Util.scaleVector(this.dir(), Asteroids.Bullet.SPEED)
-      }));
-      this.game.shotsFired++;
+      var bounds = this.bounds();
+      var dir = this.dir();
 
-      if (this.game.level > 2) {
-        this.game.addEntity(new Asteroids.Bullet({
-          game: this.game,
-          pos: this.bounds().tailCenter,
-          vel: Asteroids.Util.scaleVector(this.dir().tailCenter, Asteroids.Bullet.SPEED)
-        }));
-        this.game.shotsFired++;
+      this.shootBullet(bounds.nose, dir);
+
+      for (var i = 1, l = this.game.level / 2; i < l; ++i) {
+        this.shootBullet(bounds.nose, dir, i *  5);
+        this.shootBullet(bounds.nose, dir, i * -5);
       }
 
-      if (this.game.level > 9) {
-        this.game.addEntity(new Asteroids.Bullet({
-          game: this.game,
-          pos: this.bounds().tailLeft,
-          vel: Asteroids.Util.scaleVector(this.dir().tailLeft, Asteroids.Bullet.SPEED)
-        }));
-        this.game.addEntity(new Asteroids.Bullet({
-          game: this.game,
-          pos: this.bounds().tailRight,
-          vel: Asteroids.Util.scaleVector(this.dir().tailRight, Asteroids.Bullet.SPEED)
-        }));
-        this.game.shotsFired += 2;
-      }
       this.gunCooldown = Ship.GUN_COOLDOWN;
     }
+  };
+
+  Ship.prototype.shootBullet = function (pos, dir, rotation) {
+    if (rotation) {
+      dir = Asteroids.Util.rotateVector(dir, { x: 0, y: 0 }, rotation);
+    }
+
+    this.game.addEntity(new Asteroids.Bullet({
+      game: this.game,
+      pos: pos,
+      vel: Asteroids.Util.scaleVector(dir, Asteroids.Bullet.SPEED)
+    }));
+
+    ++this.game.shotsFired;
   };
 
   Ship.prototype.makeImmune = function (seconds) {
