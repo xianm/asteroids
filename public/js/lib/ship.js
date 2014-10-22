@@ -8,18 +8,22 @@
 
     this.color = "#EEE";
     this.immuneColor = "#00FF00";
-    this.size = { width: 20, height: 30 };
+    this.size = Asteroids.Ship.SIZE;
     this.rotation = Math.random() * 360;
-    this.thrusterCooldown = 0;
+    this.immunityCooldown = 0;
     this.gunCooldown = 0;
   };
 
   Asteroids.Util.inherits(Ship, Asteroids.Entity);
 
-  Ship.IMMUNITY_TTL = 3;
+  Ship.SIZE = {
+    width: 20,
+    height: 30
+  };
   Ship.MAX_SPEED = 250;
   Ship.ACCELERATION = 750;
   Ship.ROTATE_SPEED = 375;
+  Ship.IMMUNITY_COOLDOWN = 1.5;
   Ship.GUN_COOLDOWN = 0.15;
 
   Ship.prototype.update = function (delta) {
@@ -27,6 +31,14 @@
 
     if (this.gunCooldown > 0) {
       this.gunCooldown -= delta;
+    }
+
+    if (this.immunityCooldown > 0) {
+      this.immunityCooldown -= delta;
+
+      if (this.immunityCooldown <= 0) {
+        this.immune = false;
+      }
     }
   };
 
@@ -130,12 +142,9 @@
     ++this.game.shotsFired;
   };
 
-  Ship.prototype.makeImmune = function (seconds) {
+  Ship.prototype.makeImmune = function () {
     this.immune = true;
-
-    setTimeout(function () {
-      this.immune = false;
-    }.bind(this), seconds * 1000);
+    this.immunityCooldown = Ship.IMMUNITY_COOLDOWN;
   };
 
   Ship.prototype.collidedWith = function (entity) {
@@ -146,6 +155,7 @@
     if (entity instanceof Asteroids.Asteroid) {
       this.game.removeEntity(this);
       this.game.spawnPlayerShip();
+      this.game.lives--;
     }
   };
 })();

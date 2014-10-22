@@ -51,9 +51,36 @@
     };
   };
 
-  Util.drawText = function (ctx, text, x, y) {
-    ctx.font = "12pt Courier New, Courier, monospace"
+  Util.drawText = function (ctx, text, x, y, size) {
+    size = size || 12;
+    
+    ctx.font = size + "pt Courier New, Courier, monospace";
     ctx.fillStyle = "#FFFFFF";
-    ctx.fillText(text, x, y);
+
+    var lines = text.split("\n");
+    var yOff = size;
+
+    for (var i = 0, l = lines.length; i < l; ++i) {
+      ctx.fillText(lines[i], x, y);
+      y += size + yOff;
+    }
+  };
+
+  Util.drawTextCentered = function (ctx, text, size) {
+    size = size || 12;
+
+    ctx.font = size + "pt Courier New, Courier, monospace";
+    ctx.fillStyle = "#FFFFFF";
+
+    var lines = text.split("\n");
+    var yOff = size;
+    var y = (Asteroids.DIMS.y - (lines.length * (size + yOff) - yOff)) / 2;
+
+    for (var i = 0, l = lines.length; i < l; ++i) {
+      var line = lines[i];
+      var x = (Asteroids.DIMS.x - ctx.measureText(line).width) / 2;
+      ctx.fillText(line, x, y);
+      y += size + yOff;
+    }
   };
 })();

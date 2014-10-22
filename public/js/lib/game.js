@@ -9,11 +9,13 @@
     y: 600
   };
   Asteroids.DIM_PADDING = 15;
+  Asteroids.DEFAULT_LIVES = 3;
   Asteroids.BULLET_PENALTY = 1;
 
   var Game = Asteroids.Game = function (canvasId) {
     this.ctx = this.initializeCanvas(canvasId);
 
+    this.lives = Asteroids.DEFAULT_LIVES;
     this.level = 0;
     this.score = 0;
     this.shotsFired = 0;
@@ -43,15 +45,17 @@
   Game.prototype.update = function (delta) {
     this.handleKeys(delta);
 
-    this.entities().forEach(function (e) {
-      e.update(delta);
-    });
+    if (this.lives > 0) {
+      this.entities().forEach(function (e) {
+        e.update(delta);
+      });
 
-    this.checkCollisions();
+      this.checkCollisions();
 
-    if (this.asteroids.length === 0) {
-      this.spawnAsteroids(++this.level * 2);
-      this.ship.makeImmune(Asteroids.Ship.IMMUNITY_TTL);
+      if (this.asteroids.length === 0) {
+        this.spawnAsteroids(++this.level * 2);
+        this.ship.makeImmune();
+      }
     }
   };
 
@@ -78,11 +82,15 @@
   Game.prototype.render = function (ctx) {
     ctx.clearRect(0, 0, Asteroids.DIMS.x, Asteroids.DIMS.y);
 
-    this.entities().forEach(function (e) {
-      e.render(ctx);
-    });
+    if (this.lives > 0) {
+      this.entities().forEach(function (e) {
+        e.render(ctx);
+      });
 
-    this.renderUI(ctx);
+      this.renderUI(ctx);
+    } else {
+      this.renderGameOver(ctx);
+    }
   };
 
   Game.prototype.accuracy = function () {
@@ -91,15 +99,54 @@
   };
 
   Game.prototype.renderUI = function (ctx) {
-    var levelTxt = "Level    " + this.level;
-    Asteroids.Util.drawText(ctx, levelTxt, 10, 25);
+    var infoTxt = "Level    " + this.level;
+    infoTxt +=  "\nScore    " + this.score.toLocaleString();
+    infoTxt +=  "\nAccuracy " + (this.accuracy() * 100).toFixed(2) + "%";
 
-    var scoreTxt = "Score    " + this.score;
-    Asteroids.Util.drawText(ctx, scoreTxt, 10, 55);
+    Asteroids.Util.drawText(ctx, infoTxt, 10, 25);
 
-    var accuracyTxt = "Accuracy " + (this.accuracy() * 100).toFixed(2) + "%";
-    Asteroids.Util.drawText(ctx, accuracyTxt, 10, 85);
+    this.renderLives(ctx);
   };
+
+  Game.prototype.renderLives = function (ctx) {
+    var height = Asteroids.Ship.SIZE.height * 0.6;
+    var width = Asteroids.Ship.SIZE.width * 0.6;
+    var halfH = height / 2;
+    var halfW = width / 2;
+    var xOff = 10;
+    var pos = {
+      x: Asteroids.DIMS.x - ((width + xOff) * this.lives),
+      y: 25 
+    };
+
+    for (var i = 0; i < this.lives; ++i) {
+      var bounds = {
+        nose: { x: pos.x, y: pos.y - halfH },
+        tailLeft: { x: pos.x - halfW, y: pos.y + halfH },
+        tailCenter: { x: pos.x, y: pos.y + (halfH / 2) },
+        tailRight: { x: pos.x + halfW, y: pos.y + halfH }
+      };
+
+      ctx.beginPath();
+
+      ctx.moveTo(bounds.nose.x, bounds.nose.y);
+      ctx.lineTo(bounds.tailLeft.x, bounds.tailLeft.y);
+      ctx.lineTo(bounds.tailCenter.x, bounds.tailCenter.y);
+      ctx.lineTo(bounds.tailRight.x, bounds.tailRight.y);
+
+      ctx.fill();
+      ctx.closePath();
+
+      pos.x += width + xOff;
+    }
+  };
+
+  Game.prototype.renderGameOver = function (ctx) {
+    var gameOverTxt = "Game Over!\nScore: " + 
+      this.score.toLocaleString();
+    Asteroids.Util.drawTextCentered(ctx, gameOverTxt, 14);
+  };
+
 
   Game.prototype.initializeCanvas = function (canvasId) {
     var canvas = document.getElementById(canvasId);
@@ -118,7 +165,7 @@
       vel: { x: 0, y: 0 }
     });
 
-    this.ship.makeImmune(Asteroids.Ship.IMMUNITY_TTL);
+    this.ship.makeImmune();
   };
 
   Game.prototype.spawnAsteroids = function (amount) {
